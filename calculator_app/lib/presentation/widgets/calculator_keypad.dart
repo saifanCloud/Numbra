@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'neumorphic_button.dart';
+// Mengimpor Flutter Material SDK dan komponen tombol kustom NeumorphicButton.
+
+
 
 class CalculatorKeypad extends StatelessWidget {
   final VoidCallback onClearAll;
@@ -14,7 +17,7 @@ class CalculatorKeypad extends StatelessWidget {
   final VoidCallback onEquals;
   final VoidCallback onDecimal;
   final Function(String) onNumber;
-  
+
   const CalculatorKeypad({
     super.key,
     required this.onClearAll,
@@ -30,141 +33,235 @@ class CalculatorKeypad extends StatelessWidget {
     required this.onDecimal,
     required this.onNumber,
   });
-  
+// Deklarasi properti callback aksi tombol yang diterima oleh komponen keypad kalkulator.
+
+
+
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Hitung ukuran tombol berdasarkan lebar layar
-        final buttonSize = (constraints.maxWidth - 40) / 4;
-        final fontSize = buttonSize * 0.4;
-        
+        final double maxButtonWidth = (constraints.maxWidth - 32.0 - 36.0) / 4;
+        final double maxButtonHeight = (constraints.maxHeight - 16.0 - 48.0) / 5;
+        final double buttonSize = (maxButtonWidth < maxButtonHeight ? maxButtonWidth : maxButtonHeight).clamp(10.0, 120.0);
+        final double fontSize = buttonSize * 0.32;
+        final double gap = (constraints.maxWidth - 32.0 - (4 * buttonSize)) / 3;
+
         return Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              // Row 1: AC, ±, %, ÷
-              Expanded(
-                child: Row(
-                  children: [
-                    _buildButton(context, 'AC', onClearAll, buttonSize, fontSize, isFunction: true),
-                    _buildButton(context, '±', onToggleSign, buttonSize, fontSize, isFunction: true),
-                    _buildButton(context, '%', onPercentage, buttonSize, fontSize, isFunction: true),
-                    _buildButton(context, '÷', onDivide, buttonSize, fontSize, isOperator: true),
-                  ],
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  NeumorphicButton(
+                    label: 'AC',
+                    onPressed: onClearAll,
+                    isFunction: true,
+                    isDark: isDark,
+                    size: buttonSize,
+                    fontSize: fontSize * 0.9,
+                    gap: gap,
+                  ),
+                  NeumorphicButton(
+                    label: '+/-',
+                    onPressed: onToggleSign,
+                    isFunction: true,
+                    isDark: isDark,
+                    size: buttonSize,
+                    fontSize: fontSize * 0.9,
+                    gap: gap,
+                  ),
+                  NeumorphicButton(
+                    label: '<-',
+                    onPressed: onBackspace,
+                    isFunction: true,
+                    isDark: isDark,
+                    size: buttonSize,
+                    fontSize: fontSize * 0.9,
+                    gap: gap,
+                  ),
+                  NeumorphicButton(
+                    label: '/',
+                    onPressed: onDivide,
+                    isOperator: true,
+                    isDark: isDark,
+                    size: buttonSize,
+                    fontSize: fontSize,
+                    gap: gap,
+                  ),
+                ],
               ),
-              const SizedBox(height: 8),
-              // Row 2: 7, 8, 9, ×
-              Expanded(
-                child: Row(
-                  children: [
-                    _buildButton(context, '7', () => onNumber('7'), buttonSize, fontSize),
-                    _buildButton(context, '8', () => onNumber('8'), buttonSize, fontSize),
-                    _buildButton(context, '9', () => onNumber('9'), buttonSize, fontSize),
-                    _buildButton(context, '×', onMultiply, buttonSize, fontSize, isOperator: true),
-                  ],
-                ),
+// Baris tombol 1: Menampilkan fungsi AC (Clear All), +/- (Toggle Sign), Backspace (<-), dan Pembagian (/).
+
+
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  NeumorphicButton(
+                    label: '7',
+                    onPressed: () => onNumber('7'),
+                    isDark: isDark,
+                    size: buttonSize,
+                    fontSize: fontSize,
+                    gap: gap,
+                  ),
+                  NeumorphicButton(
+                    label: '8',
+                    onPressed: () => onNumber('8'),
+                    isDark: isDark,
+                    size: buttonSize,
+                    fontSize: fontSize,
+                    gap: gap,
+                  ),
+                  NeumorphicButton(
+                    label: '9',
+                    onPressed: () => onNumber('9'),
+                    isDark: isDark,
+                    size: buttonSize,
+                    fontSize: fontSize,
+                    gap: gap,
+                  ),
+                  NeumorphicButton(
+                    label: 'X',
+                    onPressed: onMultiply,
+                    isOperator: true,
+                    isDark: isDark,
+                    size: buttonSize,
+                    fontSize: fontSize,
+                    gap: gap,
+                  ),
+                ],
               ),
-              const SizedBox(height: 8),
-              // Row 3: 4, 5, 6, -
-              Expanded(
-                child: Row(
-                  children: [
-                    _buildButton(context, '4', () => onNumber('4'), buttonSize, fontSize),
-                    _buildButton(context, '5', () => onNumber('5'), buttonSize, fontSize),
-                    _buildButton(context, '6', () => onNumber('6'), buttonSize, fontSize),
-                    _buildButton(context, '-', onSubtract, buttonSize, fontSize, isOperator: true),
-                  ],
-                ),
+// Baris tombol 2: Menampilkan angka 7, 8, 9, dan operator Perkalian (X).
+
+
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  NeumorphicButton(
+                    label: '4',
+                    onPressed: () => onNumber('4'),
+                    isDark: isDark,
+                    size: buttonSize,
+                    fontSize: fontSize,
+                    gap: gap,
+                  ),
+                  NeumorphicButton(
+                    label: '5',
+                    onPressed: () => onNumber('5'),
+                    isDark: isDark,
+                    size: buttonSize,
+                    fontSize: fontSize,
+                    gap: gap,
+                  ),
+                  NeumorphicButton(
+                    label: '6',
+                    onPressed: () => onNumber('6'),
+                    isDark: isDark,
+                    size: buttonSize,
+                    fontSize: fontSize,
+                    gap: gap,
+                  ),
+                  NeumorphicButton(
+                    label: '-',
+                    onPressed: onSubtract,
+                    isOperator: true,
+                    isDark: isDark,
+                    size: buttonSize,
+                    fontSize: fontSize,
+                    gap: gap,
+                  ),
+                ],
               ),
-              const SizedBox(height: 8),
-              // Row 4: 1, 2, 3, +
-              Expanded(
-                child: Row(
-                  children: [
-                    _buildButton(context, '1', () => onNumber('1'), buttonSize, fontSize),
-                    _buildButton(context, '2', () => onNumber('2'), buttonSize, fontSize),
-                    _buildButton(context, '3', () => onNumber('3'), buttonSize, fontSize),
-                    _buildButton(context, '+', onAdd, buttonSize, fontSize, isOperator: true),
-                  ],
-                ),
+// Baris tombol 3: Menampilkan angka 4, 5, 6, dan operator Pengurangan (-).
+
+
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  NeumorphicButton(
+                    label: '1',
+                    onPressed: () => onNumber('1'),
+                    isDark: isDark,
+                    size: buttonSize,
+                    fontSize: fontSize,
+                    gap: gap,
+                  ),
+                  NeumorphicButton(
+                    label: '2',
+                    onPressed: () => onNumber('2'),
+                    isDark: isDark,
+                    size: buttonSize,
+                    fontSize: fontSize,
+                    gap: gap,
+                  ),
+                  NeumorphicButton(
+                    label: '3',
+                    onPressed: () => onNumber('3'),
+                    isDark: isDark,
+                    size: buttonSize,
+                    fontSize: fontSize,
+                    gap: gap,
+                  ),
+                  NeumorphicButton(
+                    label: '+',
+                    onPressed: onAdd,
+                    isOperator: true,
+                    isDark: isDark,
+                    size: buttonSize,
+                    fontSize: fontSize,
+                    gap: gap,
+                  ),
+                ],
               ),
-              const SizedBox(height: 8),
-              // Row 5: 0 (wide), ., =
-              Expanded(
-                child: Row(
-                  children: [
-                    _buildButton(context, '0', () => onNumber('0'), buttonSize, fontSize, isWide: true),
-                    _buildButton(context, '.', onDecimal, buttonSize, fontSize),
-                    _buildButton(context, '=', onEquals, buttonSize, fontSize, isEquals: true),
-                  ],
-                ),
+// Baris tombol 4: Menampilkan angka 1, 2, 3, dan operator Penjumlahan (+).
+
+
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  NeumorphicButton(
+                    label: '0',
+                    onPressed: () => onNumber('0'),
+                    isWide: true,
+                    isDark: isDark,
+                    size: buttonSize,
+                    fontSize: fontSize,
+                    gap: gap,
+                  ),
+                  NeumorphicButton(
+                    label: '.',
+                    onPressed: onDecimal,
+                    isDark: isDark,
+                    size: buttonSize,
+                    fontSize: fontSize,
+                    gap: gap,
+                  ),
+                  NeumorphicButton(
+                    label: '=',
+                    onPressed: onEquals,
+                    isOperator: true,
+                    isDark: isDark,
+                    size: buttonSize,
+                    fontSize: fontSize,
+                    gap: gap,
+                  ),
+                ],
               ),
+// Baris tombol 5: Menampilkan angka 0 (lebar ganda), desimal (.), dan sama dengan (=).
             ],
           ),
         );
       },
     );
   }
-  
-  Widget _buildButton(
-    BuildContext context,
-    String label,
-    VoidCallback onPressed,
-    double size,
-    double fontSize, {
-    bool isOperator = false,
-    bool isFunction = false,
-    bool isEquals = false,
-    bool isWide = false,
-  }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    
-    Color? bgColor;
-    Color? textColor;
-    
-    if (isEquals) {
-      bgColor = const Color(0xFF4A6CF7);
-      textColor = Colors.white;
-    } else if (isOperator) {
-      bgColor = Colors.orange;
-      textColor = Colors.white;
-    } else if (isFunction) {
-      bgColor = isDark ? Colors.grey[700] : Colors.grey[300];
-      textColor = isDark ? Colors.white : Colors.black;
-    } else {
-      bgColor = isDark ? Colors.grey[800] : Colors.grey[200];
-      textColor = isDark ? Colors.white : Colors.black;
-    }
-    
-    return Padding(
-      padding: const EdgeInsets.all(4.0),
-      child: SizedBox(
-        width: isWide ? (size * 2) + 4 : size,
-        height: size,
-        child: Material(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(size / 2),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(size / 2),
-            onTap: () {
-              HapticFeedback.lightImpact();
-              onPressed();
-            },
-            child: Center(
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontSize: fontSize,
-                  fontWeight: FontWeight.w400,
-                  color: textColor,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+// Method build untuk menghitung dimensi tombol secara dinamis dan menyusun kisi-kisi tombol kalkulator.
 }

@@ -4,7 +4,7 @@ import 'calculator_exception.dart';
 import '../utils/formatter_utils.dart';
 
 class CalculatorEngine {
-  static const int MAX_DIGITS = 10;
+  static const int maxDigits = 10;
   
   CalculatorState _state = const CalculatorState();
   
@@ -28,9 +28,9 @@ class CalculatorEngine {
     if (_state.isNewNumber) {
       newDisplay = digit;
     } else {
-      final cleanDisplay = _state.display.replaceAll('.', '');
-      if (cleanDisplay.length >= MAX_DIGITS) return;
-      newDisplay = _state.display + digit;
+      final cleanDisplay = _state.display.replaceAll(' ', '');
+      if (cleanDisplay.length >= maxDigits) return;
+      newDisplay = '${_state.display}$digit';
     }
     
     _state = _state.copyWith(
@@ -53,7 +53,7 @@ class CalculatorEngine {
     if (_state.display.contains('.')) return;
     
     _state = _state.copyWith(
-      display: _state.display + '.',
+      display: '${_state.display}.',
     );
   }
   
@@ -104,7 +104,7 @@ class CalculatorEngine {
     if (_state.display.startsWith('-')) {
       newDisplay = _state.display.substring(1);
     } else {
-      newDisplay = '-$_state.display';
+      newDisplay = '-${_state.display}';
     }
     
     _state = _state.copyWith(display: newDisplay);
@@ -194,9 +194,11 @@ class CalculatorEngine {
     }
   }
   
+
   double _parseDisplay() {
     try {
-      return double.parse(_state.display);
+      final clean = _state.display.replaceAll(' ', '');
+      return double.parse(clean);
     } catch (e) {
       throw InvalidInputException(_state.display);
     }

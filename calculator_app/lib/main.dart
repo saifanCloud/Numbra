@@ -10,6 +10,9 @@ import 'domain/usecases/get_calculation_history_usecase.dart';
 import 'domain/usecases/clear_calculation_history_usecase.dart';
 import 'presentation/controllers/calculator_controller.dart';
 import 'presentation/pages/calculator_page.dart';
+// Mengimpor SDK Flutter, SharedPreferences, serta arsitektur layer Data, Domain, UseCase, Controller, dan UI.
+
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +22,6 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
   
-  // Initialize dependencies
   final sharedPreferences = await SharedPreferences.getInstance();
   final datasource = SharedPreferencesDatasource(sharedPreferences);
   final repository = CalculationRepository(datasource) as ICalculationRepository;
@@ -32,10 +34,14 @@ void main() async {
     addCalculationUseCase: addCalculationUseCase,
     getHistoryUseCase: getHistoryUseCase,
     clearHistoryUseCase: clearHistoryUseCase,
+    sharedPreferences: sharedPreferences,
   );
   
   runApp(MyApp(controller: controller));
 }
+// Fungsi entri utama (main) yang mengunci orientasi layar ke potret, menyuntikkan dependensi Clean Architecture, dan menjalankan aplikasi.
+
+
 
 class MyApp extends StatelessWidget {
   final CalculatorController controller;
@@ -47,13 +53,19 @@ class MyApp extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Calculator App',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      themeMode: ThemeMode.system,
-      home: CalculatorPage(controller: controller),
+    return ListenableBuilder(
+      listenable: controller,
+      builder: (context, _) {
+        return MaterialApp(
+          title: 'Calculator App',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData.light(),
+          darkTheme: ThemeData.dark(),
+          themeMode: controller.isDarkTheme ? ThemeMode.dark : ThemeMode.light,
+          home: CalculatorPage(controller: controller),
+        );
+      },
     );
   }
 }
+// Root widget MyApp yang mendengarkan perubahan tema gelap/terang dari controller dan menampilkan CalculatorPage.

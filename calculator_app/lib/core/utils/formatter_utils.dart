@@ -17,7 +17,7 @@ class FormatterUtils {
       
       final formattedInteger = integerPart.replaceAllMapped(
         RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-        (match) => '${match[1]}.',
+        (match) => '${match[1]} ',
       );
       
       String formattedDecimal = decimalPart;
@@ -36,6 +36,6 @@ class FormatterUtils {
   }
   
   static String removeFormatting(String formattedNumber) {
-    return formattedNumber.replaceAll('.', '');
+    return formattedNumber.replaceAll(' ', '');
   }
 }
